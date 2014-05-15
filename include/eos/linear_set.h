@@ -150,7 +150,14 @@ public:
     {
         position = insert_at(position, val);
         std::stable_sort(begin(), end(), comp_);
-        return position;
+        if ( *position == val )
+        {
+            return position;
+        }
+        else
+        {
+            return find(val);
+        }
     }
 
     template <class InputIterator>

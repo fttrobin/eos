@@ -151,6 +151,18 @@ public:
         }
     }
 
+    iterator insert(iterator position, const value_type& val)
+    {
+        // TODO(olbinski): Implement with hint.
+        return insert(val).first;
+    }
+
+    template <class InputIterator>
+    void insert(InputIterator first, InputIterator last)
+    {
+        std::copy(first, last, std::inserter(begin()));
+    }
+
     void erase(iterator position)
     {
         storage_.erase(position);

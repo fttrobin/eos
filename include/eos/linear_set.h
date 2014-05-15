@@ -141,20 +141,16 @@ public:
         }
         else
         {
-            difference_type count = std::distance(begin(), it);
-            storage_.push_back(value_type());
-            it = begin();
-            std::advance(it, count);
-            std::copy_backward(it, --end(), end());
-            *it = val;
+            it = insert_at(it, val);
             return std::make_pair(it, true);
         }
     }
 
     iterator insert(iterator position, const value_type& val)
     {
-        // TODO(olbinski): Implement with hint.
-        return insert(val).first;
+        position = insert_at(position, val);
+        std::stable_sort(begin(), end(), comp_);
+        return position;
     }
 
     template <class InputIterator>
@@ -274,6 +270,17 @@ public:
     }
 
 private:
+    iterator insert_at(iterator position, const value_type& val)
+    {
+        difference_type count = std::distance(begin(), position);
+        storage_.push_back(value_type());
+        position = begin();
+        std::advance(position, count);
+        std::copy_backward(position, --end(), end());
+        *position = val;
+        return position;
+    }
+
     key_compare     comp_;
     storage_type    storage_;
 };  // class linear_set

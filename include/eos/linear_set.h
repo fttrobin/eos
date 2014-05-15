@@ -10,6 +10,7 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
+#include <initializer_list>
 
 namespace eos
 {
@@ -53,13 +54,22 @@ public:
     : comp_(comp)
     , storage_(alloc)
     {
-        std::copy(first, last, std::inserter(begin()));
+        std::copy(first, last, std::inserter(*this, begin()));
     }
 
     linear_set(const linear_set& other)
     : comp_(other.comp_)
     , storage_(other.storage_)
     {
+    }
+
+    linear_set(std::initializer_list<value_type> il,
+               const key_compare& comp = key_compare(),
+               const allocator_type& alloc = allocator_type())
+    : comp_(comp)
+    , storage_(il, alloc)
+    {
+        std::stable_sort(begin(), end(), comp_);
     }
 
     ~linear_set()
@@ -70,6 +80,12 @@ public:
     {
         comp_    = other.comp_;
         storage_ = other.storage_;
+    }
+
+    linear_set& operator=(std::initializer_list<value_type> il)
+    {
+        storage_type(il).swap(storage_);
+        std::stable_sort(begin(), end(), comp_);
     }
 
     iterator begin()
@@ -163,7 +179,7 @@ public:
     template <class InputIterator>
     void insert(InputIterator first, InputIterator last)
     {
-        std::copy(first, last, std::inserter(begin()));
+        std::copy(first, last, std::inserter(*this, begin()));
     }
 
     void erase(iterator position)
@@ -243,32 +259,32 @@ public:
 
     iterator lower_bound(const value_type& val)
     {
-        return std::lower_bound(begin(), end(), val);
+        return std::lower_bound(begin(), end(), val, comp_);
     }
 
     const_iterator lower_bound(const value_type& val) const
     {
-        return std::lower_bound(begin(), end(), val);
+        return std::lower_bound(begin(), end(), val, comp_);
     }
 
     iterator upper_bound(const value_type& val)
     {
-        return std::upper_bound(begin(), end(), val);
+        return std::upper_bound(begin(), end(), val, comp_);
     }
 
     const_iterator upper_bound(const value_type& val) const
     {
-        return std::upper_bound(begin(), end(), val);
+        return std::upper_bound(begin(), end(), val, comp_);
     }
 
     std::pair<iterator, iterator> equal_range(const value_type& val)
     {
-        return std::equal_range(begin(), end(), val);
+        return std::equal_range(begin(), end(), val, comp_);
     }
 
     std::pair<const_iterator, const_iterator> equal_range(const value_type& val) const
     {
-        return std::equal_range(begin(), end(), val);
+        return std::equal_range(begin(), end(), val, comp_);
     }
 
     allocator_type get_allocator() const

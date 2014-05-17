@@ -1,5 +1,4 @@
 /**
- * 
  * @author Gracjan Olbinski <gracjan.olbinski@gmail.com>
  */
 
@@ -88,57 +87,77 @@ public:
         std::stable_sort(begin(), end(), comp_);
     }
 
-    iterator begin()
+    iterator begin() noexcept
     {
         return storage_.begin();
     }
 
-    const_iterator begin() const
+    const_iterator begin() const noexcept
     {
         return storage_.begin();
     }
 
-    iterator end()
+    const_iterator cbegin() const noexcept
+    {
+        return storage_.begin();
+    }
+
+    iterator end() noexcept
     {
         return storage_.end();
     }
 
-    const_iterator end() const
+    const_iterator end() const noexcept
     {
         return storage_.end();
     }
 
-    reverse_iterator rbegin()
+    const_iterator cend() const noexcept
+    {
+        return storage_.end();
+    }
+
+    reverse_iterator rbegin() noexcept
     {
         return storage_.rbegin();
     }
 
-    const_reverse_iterator rbegin() const
+    const_reverse_iterator rbegin() const noexcept
     {
         return storage_.rbegin();
     }
 
-    reverse_iterator rend()
+    const_reverse_iterator crbegin() const noexcept
+    {
+        return storage_.rbegin();
+    }
+
+    reverse_iterator rend() noexcept
     {
         return storage_.rend();
     }
 
-    const_reverse_iterator rend() const
+    const_reverse_iterator rend() const noexcept
     {
         return storage_.rend();
     }
 
-    bool empty() const
+    const_reverse_iterator rend() const noexcept
+    {
+        return storage_.rend();
+    }
+
+    bool empty() const noexcept
     {
         return storage_.empty();
     }
 
-    size_type size() const
+    size_type size() const noexcept
     {
         return storage_.size();
     }
 
-    size_type max_size() const
+    size_type max_size() const noexcept
     {
         return storage_.max_size();
     }
@@ -296,7 +315,7 @@ private:
     iterator insert_at(iterator position, const value_type& val)
     {
         difference_type count = std::distance(begin(), position);
-        storage_.push_back(value_type());
+        storage_.emplace_back();
         position = begin();
         std::advance(position, count);
         std::copy_backward(position, --end(), end());
